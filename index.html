@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>KHLUMUS</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      
+      var map;
+
+      function initMap() {
+        var gZoom = 2;
+        var gLat = 10;
+        var gLng = 12
+        //do we have coordinates in the URIHash? if yes - use them. if no - go to defaults.
+        gZoom = (URIHash.get('zoom')) ? Number(URIHash.get('zoom')) : gZoom;
+        gLat = (URIHash.get('lat')) ? Number(URIHash.get('lat')) : gLat;
+        gLng = (URIHash.get('lng')) ? Number(URIHash.get('lng')) : gLng;
+
+        //init the map!
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: gLat, lng: gLng},
+          zoom: gZoom,
+          streetViewControl: false,
+          mapTypeControlOptions: {
+            mapTypeIds: ['KHLUMUS']
+          },
+					title: 'Khlumus'
+        });
+
+        //event listeners to update URI hash
+				map.addListener('center_changed', function() {
+          updateUriHash();
+        });
+				map.addListener('zoom_changed', function() {
+          updateUriHash();
+        });
+
+        var updateUriHash = function() {
+          URIHash.set('zoom', map.getZoom());
+          URIHash.set('lng', map.getCenter().lng());
+          URIHash.set('lat', map.getCenter().lat());
+        };
+
+
+        var moonMapType = new google.maps.ImageMapType({
+          getTileUrl: function(coord, zoom) {
+              var normalizedCoord = getNormalizedCoord(coord, zoom);
+              if (!normalizedCoord) {
+                return null;
+              }
+              var bound = Math.pow(2, zoom);
+              //return '//mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
+              return '/khlumus/' +
+                  + zoom + '/' + normalizedCoord.x + '/' +
+                  (bound - normalizedCoord.y - 1) + '.png';
+          },
+          tileSize: new google.maps.Size(256, 256),
+          maxZoom: 5,
+          minZoom: 0,
+          radius: 1738000,
+          name: 'Khlumus'
+        });
+
+        map.mapTypes.set('moon', moonMapType);
+        map.setMapTypeId('moon');
+      }
+
+      // Normalizes the coords that tiles repeat across the x axis (horizontally)
+      // like the standard Google map tiles.
+      function getNormalizedCoord(coord, zoom) {
+        var y = coord.y;
+        var x = coord.x;
+
+        // tile range in one direction range is dependent on zoom level
+        // 0 = 1 tile, 1 = 2 tiles, 2 = 4 tiles, 3 = 8 tiles, etc
+        var tileRange = 1 << zoom;
+
+        // don't repeat across y-axis (vertically)
+        if (y < 0 || y >= tileRange) {
+          y = (y % tileRange + tileRange) % tileRange;
+        }
+
+        // repeat across x-axis
+        if (x < 0 || x >= tileRange) {
+          x = (x % tileRange + tileRange) % tileRange;
+        }
+
+        return {x: x, y: y};
+      }
+
+    //get and set location hash
+
+   /**
+ * Copyright 2009 by David Kerkeslager
+ * Released under the BSD License (http://davidkerkeslager.com/license.txt).
+ *
+ * This library defines an object-literal which allows one to store key/value pairs after the hash (#) in the URI.
+ * The syntax of the storage is modeled after the way that GET variables are stored after the question mark (?) in
+ * the URI.
+ *
+ * Example URI: "http://www.foo.com/index.html#foo=bar&baz=quux"
+ *
+ * Note: it should be obvious that this should not be used for storing private data of any kind.
+ */
+
+	var URIHash =
+	{
+		/**
+		 * Dump the contents of the URI hash into an associative array. If the hash is invalid, the method returns
+		 * undefined.
+		 */
+		dump : function()
+		{
+			var hash = document.location.hash;
+			var dump = new Array();
+
+			if(hash.length == 0) return dump;
+
+			hash = hash.substring(1).split('&');
+
+			for(var key in hash)
+			{
+				var pair = hash[key].split('=');
+
+				if(pair.length != 2 || pair[0] in dump)
+					return undefined;
+
+				// escape for storage
+				dump[unescape(pair[0])] = unescape(pair[1]);
+			}
+
+			return dump;
+		},
+
+		/**
+		 * Takes an associative array and stores it in the URI as a hash after the # prefix, replacing any pre-
+		 * existing hash.
+		 */
+		load : function(array)
+		{
+			var first = true;
+			var hash = '';
+
+			for(var key in array)
+			{
+				if(!first) hash += '&';
+				hash += escape(key) + '=' + escape(array[key]);
+			}
+
+			document.location.hash = hash;
+		},
+
+		/**
+		 * Get the value of a key from the hash.  If the hash does not contain the key or the hash is invalid,
+		 * the function returns undefined.
+		 */
+		get : function(key)
+		{
+			return this.dump()[key];
+		},
+
+		/**
+		 * Set the value of a key in the hash.  If the key does not exist, the key/value pair is added.
+		 */
+		set : function(key,value)
+		{
+			var dump = this.dump();
+			dump[key] = value;
+
+			var hash = new Array();
+
+			for(var key in dump)
+				hash.push(escape(key) + '=' + escape(dump[key]));
+
+			document.location.hash = hash.join('&');
+		}
+	} 
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+    </script>
+  </body>
+</html>
