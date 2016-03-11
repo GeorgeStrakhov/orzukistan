@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>KHLUMUS</title>
+    <title>ORZUKISTAN</title>
     <style>
       html, body {
         height: 100%;
@@ -34,9 +34,9 @@
           zoom: gZoom,
           streetViewControl: false,
           mapTypeControlOptions: {
-            mapTypeIds: ['KHLUMUS']
+            mapTypeIds: ['Orzukistan']
           },
-					title: 'Khlumus'
+					title: 'Orzukistan'
         });
 
         //event listeners to update URI hash
@@ -62,7 +62,7 @@
               }
               var bound = Math.pow(2, zoom);
               //return '//mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
-              return '/khlumus/' +
+              return '/orzukistan/' +
                   + zoom + '/' + normalizedCoord.x + '/' +
                   (bound - normalizedCoord.y - 1) + '.png';
           },

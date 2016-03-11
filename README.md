@@ -6,7 +6,7 @@
 
 1. Install python 2.7
 2. Install gdal (`brew install gdal`)
-3. Make tiles like this: `gdal2tiles.py -p raster -z 0-5 -w none src/orzukistan.jpg` (More info here: http://build-failed.blogspot.ru/2012/11/zoomable-image-with-leaflet.html)
+3. Make tiles like this: `gdal2tiles.py -p raster -z 0-5 -w none src/orzukistan.png` (More info here: http://build-failed.blogspot.ru/2012/11/zoomable-image-with-leaflet.html)
 4. Commit
 5. Push 
 
