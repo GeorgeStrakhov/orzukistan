@@ -12,6 +12,10 @@
         height: 100%;
       }
     </style>
+    <script src="bower_components/lodash/dist/lodash.js"></script>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/howler.js/howler.js"></script>
+    <script src="js/custom.js"></script>
   </head>
   <body>
     <div id="map"></div>
@@ -20,7 +24,7 @@
       var map;
 
       function initMap() {
-        var gZoom = 2;
+        var gZoom = 0;
         var gLat = 10;
         var gLng = 12
         //do we have coordinates in the URIHash? if yes - use them. if no - go to defaults.
@@ -39,20 +43,35 @@
 					title: 'Orzukistan'
         });
 
+        map.addListener('tilesloaded', function() {
+          updateAllDebounced();
+        });
+
         //event listeners to update URI hash
 				map.addListener('center_changed', function() {
-          updateUriHash();
+          updateAllDebounced();
         });
 				map.addListener('zoom_changed', function() {
-          updateUriHash();
+          updateAllDebounced();
         });
 
-        var updateUriHash = function() {
-          URIHash.set('zoom', map.getZoom());
-          URIHash.set('lng', map.getCenter().lng());
-          URIHash.set('lat', map.getCenter().lat());
+        var f = {}; //current frame
+        var updateAll = function() {
+          //get current frame
+          f.zoom = map.getZoom();
+          f.lat = map.getCenter().lat();
+          f.lng = map.getCenter().lng();
+          
+          //update URI hash
+          URIHash.set('zoom', f.zoom);
+          URIHash.set('lng', f.lng);
+          URIHash.set('lat', f.lat);
+
+          //update music
+          omuz.updateMusic(f); //FIXME this should be less global / interdependant 
         };
 
+        var updateAllDebounced = _.debounce(updateAll, 200);
 
         var moonMapType = new google.maps.ImageMapType({
           getTileUrl: function(coord, zoom) {
