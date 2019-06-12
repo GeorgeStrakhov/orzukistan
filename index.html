@@ -11,15 +11,39 @@
       #map {
         height: 100%;
       }
+      #hello {
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 50%;
+        text-align: center;
+        font-family: Georgia;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(85, 85, 85, 0.71);
+          padding-top: 100px;
+        color: white;
+        z-index: 100000;
+      }
     </style>
     <script src="bower_components/lodash/dist/lodash.js"></script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
-    <script src="bower_components/howler.js/howler.js"></script>
+    <script src="bower_components/howler.js/dist/howler.js"></script>
     <script src="js/custom.js"></script>
   </head>
   <body>
     <div id="map"></div>
+    <div id="hello">
+      <h1>welcome to orzukistan</h1>
+      <h3>the soundscape of dreams</h3>
+      <button id="startButton">DIVE IN</button>
+    </div>
     <script>
+
+      document.querySelector('button').addEventListener('click', function() {
+        $('#hello').hide();
+        initPlayback();
+      });
       
       var map;
 
@@ -209,7 +233,7 @@
 
     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyBfTNwQVX3wyiLkhe2aP9z8Ghfv2DUsQ10">
     </script>
   </body>
 </html>

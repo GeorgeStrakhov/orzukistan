@@ -17,7 +17,7 @@
     "tests"
   ],
   "dependencies": {
-    "howler.js": "howler#^1.1.29",
+    "howler.js": "*",
     "jquery": "*",
     "lodash": "*"
   }
