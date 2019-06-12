@@ -70,7 +70,7 @@ var startIfAllSoundsReady = function() {
 var loadSounds = function() {
   _.forEach(omuz.sounds, function(sval, sname) {
     omuz.sounds[sname].howl = new Howl({
-      urls: ['muz/'+sval.fileName],
+      src: ['muz/'+sval.fileName],
       loop: true,
       onload: function() {
         omuz.sounds[sname].isLoaded = true;
